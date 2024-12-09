@@ -1,15 +1,25 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using Grpc.Net.Client;
 using GrpcSample;
 using System.Threading.Tasks;
 using System;
+using Polly;
+using Polly.CircuitBreaker;
 
 //Console.WriteLine("Hello, World!");
+// Add Polly policies var retryPolicy = Policy.Handle<Exception>().RetryAsync(3);
 
 class Program
 {
     static async Task Main(string[] args)
     {
+        var retryPolicy = Policy
+            .Handle<Exception>()
+            .RetryAsync(3, onRetry: (exception, retryCount, context) =>
+            {
+                Console.WriteLine($"Retry {retryCount} for {context.PolicyKey} at {context.OperationKey}, due to: {exception}.");
+            });
+
         var channel = GrpcChannel.ForAddress("https://localhost:7163");
         var client = new PersonService.PersonServiceClient(channel);
 
@@ -40,14 +50,37 @@ class Program
                 NationalCode = nationalCode
             };
 
-            var createdPerson = await client.CreateAsync(newPerson);
-            Console.WriteLine($"Created: {createdPerson.Id} - {createdPerson.Name} {createdPerson.Family} - {createdPerson.BirthDate} - {createdPerson.NationalCode} Person");
+            try
+            {
+                await retryPolicy.ExecuteAsync(async () =>
+                {
+                    var createdPerson = await client.CreateAsync(newPerson);
+                    Console.WriteLine($"Created: {createdPerson.Id} - {createdPerson.Name} {createdPerson.Family} - {createdPerson.BirthDate} - {createdPerson.NationalCode} Person");
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"faild due to: {ex.Message}");
+            }
 
             Console.WriteLine("");
 
             // Example: Get all persons
             Console.WriteLine($"List of persons:");
-            var response = await client.GetAllAsync(new Empty());
+
+            PersonList response = new();
+            try
+            {
+                await retryPolicy.ExecuteAsync(async () =>
+                {
+                    response = await client.GetAllAsync(new Empty());
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"faild due to: {ex.Message}");
+            }
+
             foreach (var person in response.Persons)
             {
                 Console.WriteLine($"Person: {person.Id} - {person.Name} {person.Family} - {person.BirthDate} - {person.NationalCode}");
