@@ -1,0 +1,88 @@
+# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (Mono Auto Generated)
+mono_crash.*
+
+# Mono auto generated files
+mono_crash.*
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Oo]utput/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+
+# Microsoft Azure Build
+.iptv/
+Azure/
+
+# EntityFramework
+*.edmx.sql
+*.schema.sql
+*.class.sql
+
+# MSTest test Results
+[Tt]est[Rr]esult*/**
+*.trx
+*.coverage
+*.coverlet
+*.coveragexml
+*.coverage.tsv
+coverage.info
+coverage.opencover.xml
+
+# Others
+.vscode/
+.idea/
+.sln*
+
+# Ignore directory for stores of local state.
+.localhistory/
+
+# Folders created by popular Visual Studio extensions
+.vs/
+_ReSharper*
+*.dotCover
+.idea/
+.ionide/
+.propertyStorage/
+.vscode/
+*.suo
+*.user
+*.rsuser
+*.sln.docstates
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file for IntelliSense and code navigation
+.vscode/
+
+# JetBrains Rider
+.idea/
+
+# JetBrains Rider
+.idea/
